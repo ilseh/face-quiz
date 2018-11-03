@@ -6,6 +6,7 @@ import { FaceCardComponent } from './face-card/face-card.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatCardModule, MatRadioModule } from '@angular/material';
 import { HttpClientModule } from '@angular/common/http';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -13,9 +14,10 @@ import { HttpClientModule } from '@angular/common/http';
     FaceCardComponent
   ],
   imports: [
-    BrowserModule, BrowserAnimationsModule, MatCardModule, MatRadioModule, HttpClientModule
+    BrowserModule, BrowserAnimationsModule, MatCardModule, MatRadioModule, HttpClientModule, ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

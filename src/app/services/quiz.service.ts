@@ -24,4 +24,8 @@ export class QuizService {
   public getImageLocation(name: string): string {
     return QUIZ_INPUT_DIR + name;
   }
+
+  public makePrettyName(jpgName: string) {
+    return jpgName.replace(/_/g, ' ').replace(/\..*/, '');
+  }
 }

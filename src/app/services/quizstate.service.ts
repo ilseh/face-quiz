@@ -57,7 +57,7 @@ export class QuizstateService {
     return Math.floor(Math.random() * items.length);
   }
 
-  get currentQuizItem(): QuizItem{
+  get currentQuizItem(): QuizItem {
     return this.quizItems.filter(item => item.guess === '')[0];
   }
 
