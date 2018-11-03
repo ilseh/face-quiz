@@ -1,0 +1,18 @@
+<mat-card class="example-card">
+  <img mat-card-image [src]="imageLocation" alt="Wie ben ik">
+  <mat-card-content>
+    <p>
+      Wie ben ik
+
+      <mat-radio-group class="radio-group" formControl="name" *ngIf="getNames() as names">
+        <mat-radio-button class="radio-button" *ngFor="let name of names">
+          {{name}}
+        </mat-radio-button>
+      </mat-radio-group>
+    </p>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-button>LIKE</button>
+    <button mat-button>SHARE</button>
+  </mat-card-actions>
+</mat-card>
