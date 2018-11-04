@@ -4,6 +4,7 @@ import { QuizService } from '../services/quiz.service';
 import { QuizItem, QuizstateService } from '../services/quizstate.service';
 
 const RESULT_OK = 'OK';
+const RESULT_NOK = 'NOK';
 
 @Component({
   selector: 'app-face-card',
@@ -40,9 +41,8 @@ export class FaceCardComponent implements OnInit {
     return this.quizService.makePrettyName(name);
   }
 
-
   processItem() {
-    if (this.result === RESULT_OK) {
+    if (this.isGuessed()) {
       this.result = '';
       this.quizState.currentQuizItem.numberOfGuesses = this.currentItem.numberOfGuesses;
       this.form.controls.name.setValue('')
@@ -50,10 +50,14 @@ export class FaceCardComponent implements OnInit {
     } else {
       this.currentItem.numberOfGuesses++;
       if (this.form.controls.name.value === this.currentItem.name) {
-        this.result = 'OK';
+        this.result = RESULT_OK;
       } else {
-        this.result = 'Probeer nog eens';
+        this.result = RESULT_NOK;
       }
     }
+  }
+
+  isGuessed() {
+    return this.result === RESULT_OK;
   }
 }

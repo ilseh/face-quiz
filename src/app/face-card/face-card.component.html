@@ -1,7 +1,8 @@
 <form [formGroup]="form">
-  <mat-card class="example-card">
+  <!--<div class="card-form">-->
+  <mat-card class="card">
     <mat-card-title></mat-card-title>
-    <mat-card-subtitle>{{ result }}</mat-card-subtitle>
+    <mat-card-subtitle>{{ result ? (isGuessed() ? 'GOED!' : 'Probeer opnieuw' ) : '' }}</mat-card-subtitle>
     <img mat-card-image [src]="imageLocation" alt="Wie ben ik">
     <mat-card-content>
         <mat-radio-group class="radio-group" formControlName="name">
@@ -11,7 +12,8 @@
         </mat-radio-group>
     </mat-card-content>
     <mat-card-actions>
-      <button mat-button (click)="processItem()">volgende</button>
+      <button mat-button (click)="processItem()">{{ isGuessed() ? 'Volgende' : 'Controleren'}}</button>
     </mat-card-actions>
   </mat-card>
+  <!--</div>-->
 </form>
