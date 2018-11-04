@@ -1,4 +1,6 @@
-
+//.mat-card-image {
+//  max-width: 450px;
+//}
 
 .card {
   max-width: 460px;
@@ -15,8 +17,8 @@
 
 .card-form {
   width: 100%;
-  align-content: center;
-  font-family: "Campton W00 Light", sans-serif;
+  display: flex;
+  justify-content: center;
 }
 .mat-button {
   background-color: #FFDD00;

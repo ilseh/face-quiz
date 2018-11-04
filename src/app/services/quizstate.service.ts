@@ -29,7 +29,7 @@ export class QuizstateService {
   public initiliaze() {
     const items = _.cloneDeep(this.service.getNames());
 
-    for (let i = 0; i < NUMBER_OF_ITEMS; i++) {
+    for (let i = 0; i < items.length; i++) {
       const item = new QuizItem(this.popRandom(items));
       const alternatives = _.cloneDeep(this.service.getNames()).filter(name => name !== item.name);
       for (let j = 0; j < QUIZ_NUMBER_OF_ALTERNATIVES; j++) {

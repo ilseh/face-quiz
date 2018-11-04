@@ -15,10 +15,7 @@ export class QuizService {
   constructor(private httpClient: HttpClient) { }
 
   public getNames(): string[] {
-    console.log('>>>>>>>>>>>>>>>>', Config.input, Config.input.length);
-
     return Config.input;
-
   }
 
   public getImageLocation(name: string): string {

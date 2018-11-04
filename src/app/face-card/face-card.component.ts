@@ -21,11 +21,13 @@ export class FaceCardComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.items = this.quizState.newQuizItems;
     this.nextItem();
   }
 
   nextItem() {
+    if (!this.items || this.items.length === 0) {
+      this.items = this.quizState.newQuizItems;
+    }
     this.currentItem = this.items.pop();
   }
 
@@ -44,7 +46,6 @@ export class FaceCardComponent implements OnInit {
   processItem() {
     if (this.isGuessed()) {
       this.result = '';
-      this.quizState.currentQuizItem.numberOfGuesses = this.currentItem.numberOfGuesses;
       this.form.controls.name.setValue('')
       this.nextItem();
     } else {

@@ -1,5 +1,5 @@
 <form [formGroup]="form">
-  <!--<div class="card-form">-->
+  <div class="card-form">
   <mat-card class="card">
     <mat-card-title></mat-card-title>
     <mat-card-subtitle>{{ result ? (isGuessed() ? 'GOED!' : 'Probeer opnieuw' ) : '' }}</mat-card-subtitle>
@@ -15,5 +15,5 @@
       <button mat-button (click)="processItem()">{{ isGuessed() ? 'Volgende' : 'Controleren'}}</button>
     </mat-card-actions>
   </mat-card>
-  <!--</div>-->
+  </div>
 </form>
