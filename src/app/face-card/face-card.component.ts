@@ -26,7 +26,7 @@ export class FaceCardComponent implements OnInit {
 
   nextItem() {
     if (!this.items || this.items.length === 0) {
-      this.items = this.quizState.newQuizItems;
+      this.items = this.quizState.newQuizItems();
     }
     this.currentItem = this.items.pop();
   }

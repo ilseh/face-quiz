@@ -22,14 +22,13 @@ export const QUIZ_NUMBER_OF_ALTERNATIVES = 2;
 })
 export class QuizstateService {
 
-  public quizItems: QuizItem[] = [];
-
   constructor(private service: QuizService) { }
 
-  public initiliaze() {
+  public newQuizItems() {
     const items = _.cloneDeep(this.service.getNames());
+    const initializeItems: QuizItem[] = [];
 
-    for (let i = 0; i < items.length; i++) {
+    while (initializeItems.length < this.service.getNames().length) {
       const item = new QuizItem(this.popRandom(items));
       const alternatives = _.cloneDeep(this.service.getNames()).filter(name => name !== item.name);
       for (let j = 0; j < QUIZ_NUMBER_OF_ALTERNATIVES; j++) {
@@ -37,13 +36,10 @@ export class QuizstateService {
       }
       item.alternatives.push(item.name);
       item.alternatives = this.shake(item.alternatives);
-      this.quizItems.push(item);
+      initializeItems.push(item);
     }
-  }
 
-  get newQuizItems() {
-    this.initiliaze();
-    return this.quizItems;
+    return initializeItems;
   }
 
   popRandom(items: string[]): string {
@@ -55,10 +51,6 @@ export class QuizstateService {
 
   getRandomIndex(items: any[]) {
     return Math.floor(Math.random() * items.length);
-  }
-
-  get currentQuizItem(): QuizItem {
-    return this.quizItems.filter(item => item.guess === '')[0];
   }
 
   public shake(items: string[]) {
