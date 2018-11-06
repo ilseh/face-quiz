@@ -9,7 +9,7 @@
     "test:headless": "ng test --browsers ChromeHeadless --watch=false --code-coverage",
     "lint": "ng lint",
     "build:github-pages": "ng build --prod --base-href \"https://ilseh.github.io/face-quiz/\"",
-    "deploy:github-pages": "ngh -d .\\dist\\face-quiz\\  -r https://github.com/ilseh/ilseh.github.io.git",
+    "deploy:github-pages": "ngh -d ./dist/face-quiz/  -r https://github.com/ilseh/ilseh.github.io.git",
     "e2e": "ng e2e"
   },
   "private": true,
