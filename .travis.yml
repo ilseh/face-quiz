@@ -14,10 +14,10 @@ before_script:
   - npm run lint
 
 script:
-  - ng build --prod --base-href "https://ilseh.github.io/face-quiz/"
+  - npm run build:github-pages
 
 after_success:
-  - npx ngh -d .\dist\face-quiz\  -r https://github.com/ilseh/ilseh.github.io.git -n ilseh -S
+  - npm run deploy:github-pages
 
 
 notifications:
