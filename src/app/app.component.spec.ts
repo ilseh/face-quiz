@@ -1,12 +1,22 @@
 import { TestBed, async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
+import { FaceCardComponent } from './face-card/face-card.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule, MatCardModule, MatDialogModule, MatRadioModule } from '@angular/material';
+import { HttpClientModule } from '@angular/common/http';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        AppComponent
+        AppComponent, FaceCardComponent
       ],
+      imports: [
+        BrowserModule, BrowserAnimationsModule, MatCardModule, MatRadioModule, ReactiveFormsModule,
+        MatDialogModule, MatButtonModule,
+      ]
     }).compileComponents();
   }));
 
@@ -26,6 +36,6 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to face-quiz!');
+    expect(compiled.querySelector('h1').textContent).toContain('Wie ben ik');
   });
 });

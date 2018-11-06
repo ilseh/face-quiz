@@ -1,0 +1,27 @@
+#.travis.yml
+
+language: node_js
+node_js:
+  - "8.9"
+
+branches:
+  only:
+    - master
+
+before_script:
+  - npm install -g @angular/cli
+  - ng test
+  - ng lint
+
+script:
+  - ng build --prod --base-href "https://ilseh.github.io/face-quiz/"
+  - ng test
+
+after_success:
+  - npx ngh -d .\dist\face-quiz\  -r https://github.com/ilseh/ilseh.github.io.git -n ilseh -S
+
+
+notifications:
+  email:
+    on_failure: ilse.haanstra@gmail.com
+    on_success: ilse.haanstra@gmail.com
