@@ -46,7 +46,8 @@ export class FaceCardComponent implements OnInit {
   processItem() {
     if (this.isGuessed()) {
       this.result = '';
-      this.form.controls.name.setValue('');
+      // this.form.controls.name.setValue('');
+      this.currentItem = null;
       this.nextItem();
     } else {
       this.currentItem.numberOfGuesses++;
@@ -61,4 +62,19 @@ export class FaceCardComponent implements OnInit {
   isGuessed() {
     return this.result === RESULT_OK;
   }
+
+  get buttonText() {
+    let text = 'Controleren';
+    if (this.isGuessed()) {
+      text = 'OK - volgende';
+    } else {
+      if (this.currentItem.numberOfGuesses === 1) {
+        text = 'NOK - probeer nog eens';
+      } else if (this.currentItem.numberOfGuesses > 1) {
+        text = ':-(';
+      }
+    }
+    return text;
+  }
+
 }
