@@ -15,7 +15,6 @@ before_script:
 
 script:
   - ng build --prod --base-href "https://ilseh.github.io/face-quiz/"
-  - ng test
 
 after_success:
   - npx ngh -d .\dist\face-quiz\  -r https://github.com/ilseh/ilseh.github.io.git -n ilseh -S
