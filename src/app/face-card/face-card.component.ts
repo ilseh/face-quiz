@@ -47,7 +47,6 @@ export class FaceCardComponent implements OnInit {
     if (this.isGuessed()) {
       this.result = '';
       this.form.controls.name.setValue('');
-      this.currentItem = null;
       this.nextItem();
     } else {
       this.currentItem.numberOfGuesses++;
