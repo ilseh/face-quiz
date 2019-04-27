@@ -31,7 +31,7 @@ export class QuizService {
   public getNamesToChooseFrom(nameOfCurrentFace: string): string[] {
     const allNamesButCurrentFace = _.cloneDeep(this.getNames()).filter(name => name !== nameOfCurrentFace);
     const alternatives: string[] = [];
-    // From all possible names, pick random names and remove that name form the possible names so
+    // From all possible names, pick random name and remove that name from the possible names so
     // we can do not get duplicates.
     while (alternatives.length < QUIZ_NUMBER_OF_ALTERNATIVES) {
       alternatives.push(this.popRandom(allNamesButCurrentFace));
