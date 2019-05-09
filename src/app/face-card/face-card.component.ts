@@ -45,16 +45,25 @@ export class FaceCardComponent implements OnInit {
 
   processItem() {
     if (this.isGuessed()) {
-      this.result = '';
-      this.form.controls.name.setValue('');
+      // Face was guessed in previous cycle, button is pressed to go to next face.
+      this.clearValuesForNextItem();
       this.nextItem();
     } else {
       this.currentItem.numberOfGuesses++;
-      if (this.form.controls.name.value === this.currentItem.name) {
-        this.result = RESULT_OK;
-      } else {
-        this.result = RESULT_NOK;
-      }
+      this.setGuessedStatus();
+    }
+  }
+
+  clearValuesForNextItem() {
+    this.result = '';
+    this.form.controls.name.setValue('');
+  }
+
+  setGuessedStatus() {
+    if (this.form.controls.name.value === this.currentItem.name) {
+      this.result = RESULT_OK;
+    } else {
+      this.result = RESULT_NOK;
     }
   }
 
