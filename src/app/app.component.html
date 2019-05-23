@@ -1,8 +1,11 @@
-<body>
-<div style="text-align:center">
-  <h1>
-    Wie ben ik
-  </h1>
-</div>
-<app-face-card></app-face-card>
-</body>
+<span *ngIf="inputZip; else chooseZip">
+  <app-face-quiz></app-face-quiz>
+</span>
+
+<ng-template #chooseZip>
+
+  <mat-form-field>
+    <input matInput placeholder="Input bestand" [formControl]="inputZipControl">
+  </mat-form-field>
+  <button mat-button (click)="setZip()">Volgende</button>
+</ng-template>
