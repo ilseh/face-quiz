@@ -16,6 +16,7 @@ import {
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FaceQuizComponent } from './face-quiz/face-quiz.component';
+import { LibModule } from '../lib/lib.module';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,7 @@ import { FaceQuizComponent } from './face-quiz/face-quiz.component';
   ],
   imports: [
     BrowserModule, BrowserAnimationsModule, MatCardModule, MatRadioModule, HttpClientModule, ReactiveFormsModule,
-    MatDialogModule, MatButtonModule, MatInputModule, MatFormFieldModule
+    MatDialogModule, MatButtonModule, MatInputModule, MatFormFieldModule, LibModule
   ],
   providers: [],
   bootstrap: [AppComponent]

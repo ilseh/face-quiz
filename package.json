@@ -10,7 +10,8 @@
     "lint": "ng lint",
     "build:github-pages": "ng build --prod --base-href \"https://ilseh.github.io/face-quiz/\"",
     "deploy:github-pages": "ngh -d ./dist/face-quiz/  -r https://GH_TOKEN@github.com/ilseh/face-quiz.git",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "fix": "echo \"module.exports = require('readable-stream');\" > ./node_modules/jszip/lib/readable-stream-browser.js"
   },
   "private": true,
   "dependencies": {
@@ -27,6 +28,8 @@
     "@angular/router": "~7.0.0",
     "@types/lodash": "^4.14.117",
     "core-js": "^2.5.4",
+    "file-system": "^2.2.2",
+    "jszip": "^3.2.1",
     "lodash": "^4.17.11",
     "rxjs": "~6.3.3",
     "zone.js": "~0.8.26"
@@ -51,5 +54,10 @@
     "ts-node": "~7.0.0",
     "tslint": "~5.11.0",
     "typescript": "~3.1.1"
+  },
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false
   }
 }

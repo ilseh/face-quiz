@@ -24,7 +24,12 @@
             "tsConfig": "src/tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "./lib/zip",
+                "output": "./scripts/"
+              }
             ],
             "styles": [
               "src/styles.scss"
@@ -132,7 +137,8 @@
               "**/node_modules/**"
             ]
           }
-        }
+        },
+
       }
     }
   },

@@ -8,4 +8,8 @@
     <input matInput placeholder="Input bestand" [formControl]="inputZipControl">
   </mat-form-field>
   <button mat-button (click)="setZip()">Volgende</button>
+
+  <br><br>
+
+  <input type="file" (change)="fileChanged($event)">
 </ng-template>
