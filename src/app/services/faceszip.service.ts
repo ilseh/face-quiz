@@ -2,18 +2,61 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { ZipEntryInterface } from '../../lib/zip/zip-entry.interface';
 import { ZipService } from '../../lib/zip/zip.service';
 import { untilDestroyed } from 'ngx-take-until-destroy';
+import { QuizServiceInterface } from './quiz.service.interface';
+import { Observable, Subject } from 'rxjs';
 
 const IMG_EXTENSIONS = ['png', 'jpeg', 'jpg', 'gif'];
 
 @Injectable({
   providedIn: 'root'
 })
-export class FaceszipService implements OnDestroy {
+export class FaceszipService implements QuizServiceInterface, OnDestroy {
 
 
   constructor(private zipService: ZipService) {
   }
 
+  getImageLocation(name: string): string {
+    return '';
+  }
+
+  getNames(): string[] {
+    return [];
+  }
+
+  getNamesToChooseFrom(nameOfCurrentFace: string): string[] {
+    return [];
+  }
+
+  getRandomIndex(numberOfItems): number {
+    return 0;
+  }
+
+  makePrettyName(jpgName: string): string {
+    return '';
+  }
+
+  popRandom(items: string[]): string {
+    return '';
+  }
+
+  shake(items: string[]): string[] {
+    return [];
+  }
+
+  public getZipEntriesNames(file: Blob): Observable<string> {
+    const names = new Subject<string>();
+    this.zipService.getEntries(file).pipe(untilDestroyed(this))
+      .subscribe(zip => {
+        console.log('>>>>>>>>zip length: ', zip.length);
+        zip.map((zipEntry: ZipEntryInterface) => {
+          names.next( zipEntry.filename);
+        });
+      });
+    return names.asObservable();
+  }
+
+  ////////////////////////////////
   public isImage(extension: string) {
     return IMG_EXTENSIONS.includes(extension.toLowerCase());
   }
@@ -27,7 +70,7 @@ export class FaceszipService implements OnDestroy {
   public getFileType(filename: string) {
     const extension = this.getExtension(filename);
 
-    let type  = 'plain/text';
+    let type = 'plain/text';
     if (this.isImage(extension)) {
       type = 'image/' + extension;
     }
@@ -57,7 +100,7 @@ export class FaceszipService implements OnDestroy {
 
   private previewFile(file: Blob) {
     const preview = document.querySelector('img');
-    const reader  = new FileReader();
+    const reader = new FileReader();
 
     reader.addEventListener('load', function () {
       preview.src = reader.result as string;

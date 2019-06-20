@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 // import { readFile } from 'fs';
 import Config from '../../assets/input/input.json';
 import * as _ from 'lodash';
+import { QuizServiceInterface } from './quiz.service.interface';
 
 export const QUIZ_INPUT_DIR = 'assets/input/';
 export const QUIZ_NUMBER_OF_ALTERNATIVES = 2;
@@ -11,14 +12,14 @@ export const QUIZ_NUMBER_OF_ALTERNATIVES = 2;
 @Injectable({
   providedIn: 'root'
 })
-export class QuizService {
+export class QuizService implements QuizServiceInterface {
 
   constructor() { }
 
   /**
    * Get all names of faces in this quiz.
    */
-  public getNames(): string[] {
+  getNames(): string[] {
     return Config.input;
   }
 
@@ -28,7 +29,7 @@ export class QuizService {
    * @param nameOfCurrentFace name of face that will be displayed (the correct answer)
    * @return QUIZ_NUMBER_OF_ALTERNATIVES + 1 names to be displayed to user to pick the correct name of the current face
    */
-  public getNamesToChooseFrom(nameOfCurrentFace: string): string[] {
+  getNamesToChooseFrom(nameOfCurrentFace: string): string[] {
     const allNamesButCurrentFace = _.cloneDeep(this.getNames()).filter(name => name !== nameOfCurrentFace);
     const alternatives: string[] = [];
     // From all possible names, pick random name and remove that name from the possible names so
@@ -41,7 +42,7 @@ export class QuizService {
     return this.shake(alternatives);
   }
 
-  private shake(items: string[]): string[] {
+  shake(items: string[]): string[] {
     const copyOfItems = _.cloneDeep(items);
     const shaken = [];
 
@@ -56,12 +57,12 @@ export class QuizService {
    * @param items to remove random item from - note that items is updated
    * @return random item
    */
-  public popRandom(items: string[]): string {
+  popRandom(items: string[]): string {
     const randomIndex = this.getRandomIndex(items.length);
     return items.splice(randomIndex, 1)[0];
   }
 
-  private getRandomIndex(numberOfItems) {
+  getRandomIndex(numberOfItems) {
     return Math.floor(Math.random() * numberOfItems);
   }
 
@@ -69,7 +70,7 @@ export class QuizService {
    * Get url of image.
    * @param name of current face
    */
-  public getImageLocation(name: string): string {
+  getImageLocation(name: string): string {
     return QUIZ_INPUT_DIR + name;
   }
 
@@ -77,7 +78,7 @@ export class QuizService {
    * Name of face is determined on basis of imagename. Parse it to decent format.
    * @param jpgName name of image
    */
-  public makePrettyName(jpgName: string) {
+  makePrettyName(jpgName: string) {
     return jpgName.replace(/_/g, ' ').replace(/\..*/, '');
   }
 }

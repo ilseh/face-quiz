@@ -19,7 +19,7 @@ export class AppComponent {
   inputZipControl = new FormControl('');
   inputZip: string;
 
-  constructor(private facesZipService: FaceszipService) {
+  constructor(private facesZipService: FaceszipService, private test: FaceszipService) {
 
   }
 
@@ -32,5 +32,10 @@ export class AppComponent {
 
     const file = event.target.files[0];
     this.facesZipService.setZipFile(file);
+
+    this.test.getZipEntriesNames(file).subscribe(
+      name => console.log('>>>>>>>>>> entry names test: ', name)
+    );
+
   }
 }
