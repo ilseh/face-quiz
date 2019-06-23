@@ -1,7 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FaceCardComponent } from './face-card.component';
-import { MatButtonModule, MatCardModule, MatDialogModule, MatRadioModule } from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatRadioModule } from '@angular/material/radio';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from '../app.component';
 import { BrowserModule } from '@angular/platform-browser';
