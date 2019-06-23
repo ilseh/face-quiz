@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { QuizService } from '../services/quiz.service';
 import { QuizItem, QuizstateService } from '../services/quizstate.service';
+import { FaceszipService } from '../services/faceszip.service';
+import { QuizHelper } from '../services/quiz-helper';
+import { Observable, of } from 'rxjs';
 
 const RESULT_OK = 'OK';
 const RESULT_NOK = 'NOK';
@@ -16,23 +19,33 @@ export class FaceCardComponent implements OnInit {
   private items: QuizItem[];
   public result: string;
   public currentItem: QuizItem;
+  isReady: Observable<boolean>;
+  testImage;
 
-  constructor(private quizService: QuizService, private quizState: QuizstateService) {
+  constructor(private quizService: FaceszipService, private quizState: QuizstateService) {
   }
 
-  ngOnInit() {
-    this.nextItem();
+  async ngOnInit() {
+    await this.nextItem();
+    this.isReady = of(true);
   }
 
-  nextItem() {
+  async nextItem() {
     if (!this.items || this.items.length === 0) {
-      this.items = this.quizState.newQuizItems();
+      this.items = await this.quizState.newQuizItems();
     }
     this.currentItem = this.items.pop();
+    this.test();
   }
 
-  get imageLocation() {
-    return this.quizService.getImageLocation(this.currentItem.name);
+  // get imageLocation(): Observable<string> {
+  test() {
+
+    this.quizService.getImageLocation(this.currentItem.name)
+      .subscribe(imageLocation => this.testImage = imageLocation);
+
+    // this.quizService.getImageLocation(this.currentItem.name).subscribe(test => console.log('>>>>>test', test));
+    // return of('');
   }
 
   get names(): string[] {
@@ -40,7 +53,7 @@ export class FaceCardComponent implements OnInit {
   }
 
   makePretty(name: string) {
-    return this.quizService.makePrettyName(name);
+    return QuizHelper.makePrettyName(name);
   }
 
   processItem() {

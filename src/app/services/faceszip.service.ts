@@ -1,9 +1,10 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy, OnInit } from '@angular/core';
 import { ZipEntryInterface } from '../../lib/zip/zip-entry.interface';
 import { ZipService } from '../../lib/zip/zip.service';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { QuizServiceInterface } from './quiz.service.interface';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { reduce, switchMap } from 'rxjs/operators';
 
 const IMG_EXTENSIONS = ['png', 'jpeg', 'jpg', 'gif'];
 
@@ -11,63 +12,41 @@ const IMG_EXTENSIONS = ['png', 'jpeg', 'jpg', 'gif'];
   providedIn: 'root'
 })
 export class FaceszipService implements QuizServiceInterface, OnDestroy {
+  private zipFile: Blob;
 
+  public setZipFile(file: Blob) {
+    this.zipFile = file;
+  }
 
   constructor(private zipService: ZipService) {
   }
 
-  getImageLocation(name: string): string {
-    return '';
-  }
-
-  getNames(): string[] {
-    return [];
-  }
-
-  getNamesToChooseFrom(nameOfCurrentFace: string): string[] {
-    return [];
-  }
-
-  getRandomIndex(numberOfItems): number {
-    return 0;
-  }
-
-  makePrettyName(jpgName: string): string {
-    return '';
-  }
-
-  popRandom(items: string[]): string {
-    return '';
-  }
-
-  shake(items: string[]): string[] {
-    return [];
-  }
-
-  public getZipEntriesNames(file: Blob): Observable<string> {
-    const names = new Subject<string>();
-    this.zipService.getEntries(file).pipe(untilDestroyed(this))
-      .subscribe(zip => {
-        console.log('>>>>>>>>zip length: ', zip.length);
-        zip.map((zipEntry: ZipEntryInterface) => {
-          names.next( zipEntry.filename);
-        });
-      });
-    return names.asObservable();
+  public getNames(): Observable<Array<string>> {
+    const names = new Array<string>();
+    return this.zipService.getEntries(this.zipFile).pipe(
+      reduce<Array<ZipEntryInterface>, Array<string>>((fileNames: Array<string>, zipEntries: Array<ZipEntryInterface>) => {
+        const matchedFilenames: Array<string> = zipEntries.map(zipEntry => zipEntry.filename);
+        fileNames.push(... matchedFilenames);
+        return fileNames;
+        // console.log('>>>>>>>>zip length: ', zipEntries.length);
+        // zip.map((zipEntry: ZipEntryInterface) => {
+        //   names.push( zipEntry.filename);
+        // });
+      }, []));
   }
 
   ////////////////////////////////
-  public isImage(extension: string) {
+  private isImage(extension: string) {
     return IMG_EXTENSIONS.includes(extension.toLowerCase());
   }
 
-  public getExtension(filename: string) {
+  private getExtension(filename: string) {
     const match = filename.match(/.+?\.(.*)/);
     console.log('>>>>>.match ', match);
     return match.length === 2 ? match[1].toLowerCase() : '';
   }
 
-  public getFileType(filename: string) {
+  private getFileType(filename: string) {
     const extension = this.getExtension(filename);
 
     let type = 'plain/text';
@@ -77,25 +56,43 @@ export class FaceszipService implements QuizServiceInterface, OnDestroy {
     return type;
   }
 
-  public setZipFile(file: Blob) {
 
-    this.zipService.getEntries(file).pipe(untilDestroyed(this))
-      .subscribe(zip => {
-        console.log('>>>>>>>>zip length: ', zip.length);
-        zip.map((zipEntry: ZipEntryInterface) => {
-          this.getFileType(zipEntry.filename);
-          console.log('>>>>>zipfile: ', zipEntry);
-          const task = this.zipService.getData(zipEntry);
-          console.log('task>>>>>>>>>>>>>', task);
-          task.data.pipe(untilDestroyed(this)).subscribe(data => {
-            console.log('>>>>>>>>>>.data: ', data);
-            // reader.readAsText(data);
-            const blob = new Blob([data], { type: this.getFileType(zipEntry.filename) });
-            this.previewFile(blob);
-          });
-        });
-      });
 
+  public getImageLocation(name: string): Observable<string> {
+    return this.zipService.getEntries(this.zipFile).pipe(
+      // I'm only interested in the zipentry that has specified name.
+      reduce<Array<ZipEntryInterface>>((matchedEntries, entries) => {
+        matchedEntries.push(...entries.filter(entry => entry.filename === name));
+        return matchedEntries;
+      }, []),
+    switchMap((filteredEntriest: ZipEntryInterface[]) => this.getImageFromZip(filteredEntriest[0])));
+  }
+
+  private getImageFromZip(zipEntry: ZipEntryInterface): Observable<string> {
+    this.getFileType(zipEntry.filename);
+    console.log('>>>>>zipfile: ', zipEntry);
+    const task = this.zipService.getData(zipEntry);
+    console.log('task>>>>>>>>>>>>>', task);
+    return task.data.pipe(switchMap(data => {
+      console.log('>>>>>>>>>>.data: ', data);
+      // reader.readAsText(data);
+      const blob = new Blob([data], { type: this.getFileType(zipEntry.filename) });
+      return this.getImageSrc(blob);
+    }));
+  }
+
+  private getImageSrc(file: Blob): Observable<string> {
+    const reader = new FileReader();
+    const src = new Subject<string>();
+
+    reader.addEventListener('load', function () {
+      src.next(reader.result as string);
+    }, false);
+
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+    return src.asObservable();
   }
 
   private previewFile(file: Blob) {

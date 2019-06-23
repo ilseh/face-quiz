@@ -15,6 +15,9 @@ import { FaceszipService } from './services/faceszip.service';
 })
 export class AppComponent {
   title = 'face-quiz';
+  testImage = '';
+
+  zipFile: Blob;
 
   inputZipControl = new FormControl('');
   inputZip: string;
@@ -25,17 +28,12 @@ export class AppComponent {
 
 
   fileChanged(event) {
-    const reader = new FileReader();
-    // reader.onload = function() {
-    //   alert(reader.result);
-    // };
+    const test = event.target.files[0];
+    this.zipFile = test;
+    this.facesZipService.setZipFile(test);
 
-    const file = event.target.files[0];
-    this.facesZipService.setZipFile(file);
-
-    this.test.getZipEntriesNames(file).subscribe(
-      name => console.log('>>>>>>>>>> entry names test: ', name)
-    );
+    this.facesZipService.getImageLocation('Fernando_Alonso.jpg')
+      .subscribe(imageLocation => this.testImage = imageLocation);
 
   }
 }

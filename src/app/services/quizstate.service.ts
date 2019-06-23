@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { QuizService } from './quiz.service';
 import * as _ from 'lodash';
+import { FaceszipService } from './faceszip.service';
+import { QuizHelper } from './quiz-helper';
 
 export class QuizItem {
-  public guess = '';
   public numberOfGuesses = 0;
 
   constructor(public name: string, public alternatives: string[]) {
@@ -16,16 +16,17 @@ export class QuizItem {
 })
 export class QuizstateService {
 
-  constructor(private service: QuizService) {
+  constructor(private service: FaceszipService) {
   }
 
-  public newQuizItems() {
-    const names = _.cloneDeep(this.service.getNames());
+  public async newQuizItems() {
+    const allNames: string[] = await this.service.getNames().toPromise();
+    const names = _.cloneDeep(allNames);
     const items: QuizItem[] = [];
 
-    while (items.length < this.service.getNames().length) {
-      const itemName = this.service.popRandom(names);
-      items.push(new QuizItem(itemName, this.service.getNamesToChooseFrom(itemName)));
+    while (items.length < allNames.length) {
+      const itemName = QuizHelper.popRandom(names);
+      items.push(new QuizItem(itemName, QuizHelper.getNamesToChooseFrom(itemName, allNames)));
     }
     return items;
   }
