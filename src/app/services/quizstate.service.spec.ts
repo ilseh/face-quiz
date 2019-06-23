@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { QuizstateService } from './quizstate.service';
 
-describe('QuizstateService', () => {
+xdescribe('QuizstateService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {

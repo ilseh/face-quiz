@@ -10,7 +10,7 @@ import { AppComponent } from '../app.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-describe('FaceCardComponent', () => {
+xdescribe('FaceCardComponent', () => {
   let component: FaceCardComponent;
   let fixture: ComponentFixture<FaceCardComponent>;
 
