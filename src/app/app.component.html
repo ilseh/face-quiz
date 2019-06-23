@@ -1,8 +1,7 @@
-<body>
-<div style="text-align:center">
-  <h1>
-    Wie ben ik
-  </h1>
-</div>
-<app-face-card></app-face-card>
-</body>
+<span *ngIf="zipFile; else chooseZip">
+  <app-face-quiz></app-face-quiz>
+</span>
+
+<ng-template #chooseZip>
+  <input type="file" (change)="fileChanged($event)">
+</ng-template>
