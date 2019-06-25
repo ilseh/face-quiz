@@ -14,6 +14,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FaceQuizComponent } from './face-quiz/face-quiz.component';
 import { LibModule } from '../lib/lib.module';
+import { MatProgressSpinnerModule, MatSpinner } from '@angular/material';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,7 @@ import { LibModule } from '../lib/lib.module';
   ],
   imports: [
     BrowserModule, BrowserAnimationsModule, MatCardModule, MatRadioModule, HttpClientModule, ReactiveFormsModule,
-    MatDialogModule, MatButtonModule, MatInputModule, MatFormFieldModule, LibModule
+    MatDialogModule, MatButtonModule, MatInputModule, MatFormFieldModule, MatProgressSpinnerModule, LibModule
   ],
   providers: [],
   bootstrap: [AppComponent]

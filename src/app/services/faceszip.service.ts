@@ -53,21 +53,20 @@ export class FaceszipService implements QuizServiceInterface {
 
   public getImageLocation(name: string): Observable<string> {
     return this.getZipEntries().pipe(
-      reduce<Array<ZipEntryInterface>>((matchedEntries, entries) => {
-        matchedEntries.push(...entries.filter(entry => this.hasEntryFilename(entry, name)));
+      reduce((matchedEntries, entries) => {
+        matchedEntries.push(...entries.filter(entry => this.isEntryName(entry, name)));
         return matchedEntries;
       }, []),
-      switchMap((filteredEntries: ZipEntryInterface[]) => {
+      switchMap((filteredEntries) => {
         // I expect from the reduce filter to have only one hit.
         if (filteredEntries.length !== 1) {
           console.warn('Didn\'t find 1 match for filename', name, `had ${filteredEntries.length} matches.`);
         }
-        // TODO: Return default image if none found.
         return this.getImageFromZip(filteredEntries[0]);
       }));
   }
 
-  private hasEntryFilename(entry: ZipEntryInterface, filename: string) {
+  private isEntryName(entry: ZipEntryInterface, filename: string) {
     return entry.filename === filename;
   }
 

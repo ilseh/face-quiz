@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { QuizService } from '../services/quiz.service';
 import { QuizItem, QuizstateService } from '../services/quizstate.service';
 import { FaceszipService } from '../services/faceszip.service';
 import { QuizHelper } from '../services/quiz-helper';
