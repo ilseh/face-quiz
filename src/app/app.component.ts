@@ -32,8 +32,5 @@ export class AppComponent {
     this.zipFile = test;
     this.facesZipService.setZipFile(test);
 
-    this.facesZipService.getImageLocation('Fernando_Alonso.jpg')
-      .subscribe(imageLocation => this.testImage = imageLocation);
-
   }
 }

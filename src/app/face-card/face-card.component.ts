@@ -19,15 +19,13 @@ export class FaceCardComponent implements OnInit {
   private items: QuizItem[];
   public result: string;
   public currentItem: QuizItem;
-  isReady: Observable<boolean>;
-  testImage;
+  isReady$: Observable<boolean>;
 
   constructor(private quizService: FaceszipService, private quizState: QuizstateService) {
   }
 
   async ngOnInit() {
     await this.nextItem();
-    this.isReady = of(true);
   }
 
   async nextItem() {
@@ -35,17 +33,11 @@ export class FaceCardComponent implements OnInit {
       this.items = await this.quizState.newQuizItems();
     }
     this.currentItem = this.items.pop();
-    this.test();
+    this.isReady$ = of(true);
   }
 
-  // get imageLocation(): Observable<string> {
-  test() {
-
-    this.quizService.getImageLocation(this.currentItem.name)
-      .subscribe(imageLocation => this.testImage = imageLocation);
-
-    // this.quizService.getImageLocation(this.currentItem.name).subscribe(test => console.log('>>>>>test', test));
-    // return of('');
+  get imageSource$(): Observable<string> {
+    return this.currentItem.imageLocation$;
   }
 
   get names(): string[] {

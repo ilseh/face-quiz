@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import * as _ from 'lodash';
 import { FaceszipService } from './faceszip.service';
 import { QuizHelper } from './quiz-helper';
+import { Observable } from 'rxjs';
 
 export class QuizItem {
   public numberOfGuesses = 0;
 
-  constructor(public name: string, public alternatives: string[]) {
+  constructor(public name: string, public alternatives: string[], public imageLocation$: Observable<string>) {
   }
 
 }
@@ -26,7 +27,8 @@ export class QuizstateService {
 
     while (items.length < allNames.length) {
       const itemName = QuizHelper.popRandom(names);
-      items.push(new QuizItem(itemName, QuizHelper.getNamesToChooseFrom(itemName, allNames)));
+      items.push(new QuizItem(itemName, QuizHelper.getNamesToChooseFrom(itemName, allNames),
+                this.service.getImageLocation(itemName)));
     }
     return items;
   }
