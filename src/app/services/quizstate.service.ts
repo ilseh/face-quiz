@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import * as _ from 'lodash';
 import { FaceszipService } from './faceszip.service';
 import { QuizHelper } from './quiz-helper';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 export class QuizItem {
   public numberOfGuesses = 0;
@@ -16,13 +15,15 @@ export class QuizItem {
   providedIn: 'root'
 })
 export class QuizstateService {
+  private items: QuizItem[];
+  public currentItem: QuizItem;
 
   constructor(private service: FaceszipService) {
   }
 
   public async newQuizItems() {
     const allNames: string[] = await this.service.getNames().toPromise();
-    const names = _.cloneDeep(allNames);
+    const names = [...allNames];
     const items: QuizItem[] = [];
 
     while (items.length < allNames.length) {
@@ -33,5 +34,15 @@ export class QuizstateService {
     return items;
   }
 
+  async setCurrentItem() {
+    if (!this.items || this.items.length === 0) {
+      this.items = await this.newQuizItems();
+    }
+    this.currentItem = this.items.pop();
+  }
+
+  public imageLocation$(): Observable<string> {
+    return this.currentItem.imageLocation$;
+  }
 
 }

@@ -1,22 +1,9 @@
-import { QuizService } from './quiz.service';
 import * as _ from 'lodash';
 import { QUIZ_NUMBER_OF_ALTERNATIVES, QuizHelper } from './quiz-helper';
 
 xdescribe('QuizService', () => {
-  let service: QuizService;
   const CORRECT_NAME = 'test';
   const ALL_NAMES = ['test1', 'test2', 'test3', 'test4', 'test5', 'test6'];
-
-  beforeEach(() => {
-
-    service = new QuizService();
-
-    spyOn(service, 'getNames').and.returnValue(ALL_NAMES);
-  });
-
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
 
   describe('getNamesToChooseFrom', () => {
 

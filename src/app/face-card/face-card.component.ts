@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { QuizItem, QuizstateService } from '../services/quizstate.service';
-import { FaceszipService } from '../services/faceszip.service';
+import { QuizstateService } from '../services/quizstate.service';
 import { QuizHelper } from '../services/quiz-helper';
 import { Observable, of } from 'rxjs';
 
@@ -15,32 +14,23 @@ const RESULT_NOK = 'NOK';
 })
 export class FaceCardComponent implements OnInit {
   public form = new FormGroup({ name: new FormControl() });
-  private items: QuizItem[];
   public result: string;
-  public currentItem: QuizItem;
   isReady$: Observable<boolean>;
 
-  constructor(private quizService: FaceszipService, private quizState: QuizstateService) {
+  constructor(private quizState: QuizstateService) {
   }
 
   async ngOnInit() {
-    await this.nextItem();
-  }
-
-  async nextItem() {
-    if (!this.items || this.items.length === 0) {
-      this.items = await this.quizState.newQuizItems();
-    }
-    this.currentItem = this.items.pop();
+    await this.quizState.setCurrentItem();
     this.isReady$ = of(true);
   }
 
   get imageSource$(): Observable<string> {
-    return this.currentItem.imageLocation$;
+    return this.quizState.imageLocation$();
   }
 
   get names(): string[] {
-    return this.currentItem.alternatives;
+    return this.quizState.currentItem.alternatives;
   }
 
   makePretty(name: string) {
@@ -51,10 +41,10 @@ export class FaceCardComponent implements OnInit {
     if (this.isGuessed()) {
       // Face was guessed in previous cycle, button is pressed to go to next face.
       this.clearValuesForNextItem();
-      this.nextItem();
+      this.quizState.setCurrentItem();
     } else {
-      this.currentItem.numberOfGuesses++;
-      this.setGuessedStatus();
+      this.quizState.currentItem.numberOfGuesses++;
+      this.determineGuessedStatus();
     }
   }
 
@@ -63,8 +53,8 @@ export class FaceCardComponent implements OnInit {
     this.form.controls.name.setValue('');
   }
 
-  setGuessedStatus() {
-    if (this.form.controls.name.value === this.currentItem.name) {
+  determineGuessedStatus() {
+    if (this.form.controls.name.value === this.quizState.currentItem.name) {
       this.result = RESULT_OK;
     } else {
       this.result = RESULT_NOK;
@@ -80,9 +70,9 @@ export class FaceCardComponent implements OnInit {
     if (this.isGuessed()) {
       text = 'OK - volgende';
     } else {
-      if (this.currentItem.numberOfGuesses === 1) {
+      if (this.quizState.currentItem.numberOfGuesses === 1) {
         text = 'NOK - probeer nog eens';
-      } else if (this.currentItem.numberOfGuesses > 1) {
+      } else if (this.quizState.currentItem.numberOfGuesses > 1) {
         text = ':-(';
       }
     }
