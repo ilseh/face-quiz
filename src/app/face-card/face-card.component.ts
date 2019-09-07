@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { QuizstateService } from '../services/quizstate.service';
 import { QuizHelper } from '../services/quiz-helper';
-import { Observable, of, timer } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { Observable, of, Subject, timer } from 'rxjs';
+import { take, takeUntil } from 'rxjs/operators';
 
 const RESULT_OK = 'OK';
 const RESULT_NOK = 'NOK';
@@ -19,6 +19,7 @@ export class FaceCardComponent implements OnInit {
   public result: string;
   isReady$: Observable<boolean>;
   private timeLeft = 0;
+  private stopTimer = new Subject();
 
   constructor(private quizState: QuizstateService) {
   }
@@ -54,8 +55,14 @@ export class FaceCardComponent implements OnInit {
   }
 
   private goNext() {
+    this.stopAndReableTimer();
     this.clearValuesForNextItem();
     this.quizState.setCurrentItem();
+  }
+
+  stopAndReableTimer() {
+    this.stopTimer.next(true);
+    this.stopTimer.next(false);
   }
 
   clearValuesForNextItem() {
@@ -90,7 +97,7 @@ export class FaceCardComponent implements OnInit {
   }
 
   setTimer() {
-    timer(0, 1000).pipe(take(TIME_TO_PROCEED + 1)).subscribe(value => {
+    timer(0, 1000).pipe(takeUntil(this.stopTimer)).subscribe(value => {
         this.timeLeft = TIME_TO_PROCEED - value;
         if (this.timeLeft < 1) {
           this.goNext();
