@@ -2,10 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { QuizstateService } from '../services/quizstate.service';
 import { QuizHelper } from '../services/quiz-helper';
-import { Observable, of } from 'rxjs';
+import { Observable, of, timer } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 const RESULT_OK = 'OK';
 const RESULT_NOK = 'NOK';
+const TIME_TO_PROCEED = 3;
 
 @Component({
   selector: 'app-face-card',
@@ -16,6 +18,7 @@ export class FaceCardComponent implements OnInit {
   public form = new FormGroup({ name: new FormControl() });
   public result: string;
   isReady$: Observable<boolean>;
+  private timeLeft = 0;
 
   constructor(private quizState: QuizstateService) {
   }
@@ -40,12 +43,19 @@ export class FaceCardComponent implements OnInit {
   processItem() {
     if (this.isGuessed()) {
       // Face was guessed in previous cycle, button is pressed to go to next face.
-      this.clearValuesForNextItem();
-      this.quizState.setCurrentItem();
+      this.goNext();
     } else {
       this.quizState.currentItem.numberOfGuesses++;
       this.determineGuessedStatus();
+      if (this.isGuessed()) {
+        this.setTimer();
+      }
     }
+  }
+
+  private goNext() {
+    this.clearValuesForNextItem();
+    this.quizState.setCurrentItem();
   }
 
   clearValuesForNextItem() {
@@ -68,7 +78,7 @@ export class FaceCardComponent implements OnInit {
   get buttonText() {
     let text = 'Controleren';
     if (this.isGuessed()) {
-      text = 'OK - volgende';
+      text = 'OK - volgende ' + this.timeLeft;
     } else {
       if (this.quizState.currentItem.numberOfGuesses === 1) {
         text = 'NOK - probeer nog eens';
@@ -79,4 +89,12 @@ export class FaceCardComponent implements OnInit {
     return text;
   }
 
+  setTimer() {
+    timer(0, 1000).pipe(take(TIME_TO_PROCEED + 1)).subscribe(value => {
+        this.timeLeft = TIME_TO_PROCEED - value;
+        if (this.timeLeft < 1) {
+          this.goNext();
+        }
+    });
+  }
 }
