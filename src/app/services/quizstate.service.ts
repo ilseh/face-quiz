@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { FaceszipService } from './faceszip.service';
 import { QuizHelper } from './quiz-helper';
 import { Observable, of } from 'rxjs';
+import { map, take } from 'rxjs/operators';
 
 export class QuizItem {
   public numberOfGuesses = 0;
@@ -21,24 +22,27 @@ export class QuizstateService {
   constructor(private service: FaceszipService) {
   }
 
-  public async newQuizItems() {
-    const allNames: string[] = await this.service.getNames().toPromise();
-    const names = [...allNames];
-    const items: QuizItem[] = [];
+  public newQuizItems(): Observable<QuizItem[]> {
+    return this.service.getNames().pipe(take(1), map((allNames: string[]) => {
+      const names = [...allNames];
+      const items: QuizItem[] = [];
 
-    while (items.length < allNames.length) {
-      const itemName = QuizHelper.popRandom(names);
-      items.push(new QuizItem(itemName, QuizHelper.getNamesToChooseFrom(itemName, allNames),
-                this.service.getImageLocation(itemName)));
-    }
-    return items;
+      while (items.length < allNames.length) {
+        // Create quiz items in random order
+        const itemName = QuizHelper.popRandom(names);
+        items.push(new QuizItem(itemName, QuizHelper.getNamesToChooseFrom(itemName, allNames),
+          this.service.getImageLocation(itemName)));
+      }
+      return items;
+    }));
   }
 
   async setCurrentItem() {
     if (!this.items || this.items.length === 0) {
-      this.items = await this.newQuizItems();
+      this.items = await this.newQuizItems().toPromise();
     }
     this.currentItem = this.items.pop();
+    // this.service.getZipEntries();
   }
 
   public imageLocation$(): Observable<string> {

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { ZipEntryInterface } from '../../lib/zip/zip-entry.interface';
 import { ZipService } from '../../lib/zip/zip.service';
 import { QuizServiceInterface } from './quiz.service.interface';
 import { Observable, Subject } from 'rxjs';
 import { reduce, switchMap } from 'rxjs/operators';
+import { JSZipObject } from 'jszip';
 
 const IMG_EXTENSIONS = ['png', 'jpeg', 'jpg', 'gif'];
 
@@ -20,14 +20,14 @@ export class FaceszipService implements QuizServiceInterface {
   constructor(private zipService: ZipService) {
   }
 
-  private getZipEntries(): Observable<Array<ZipEntryInterface>> {
+  private getZipEntries(): Observable<Array<JSZipObject>> {
     return this.zipService.getEntries(this.zipFile);
   }
 
   public getNames(): Observable<Array<string>> {
     return this.getZipEntries().pipe(
-      reduce<Array<ZipEntryInterface>, Array<string>>((fileNames: Array<string>, zipEntries: Array<ZipEntryInterface>) => {
-        fileNames.push(...zipEntries.map(zipEntry => zipEntry.filename));
+      reduce<Array<JSZipObject>, Array<string>>((fileNames: Array<string>, zipEntries: Array<JSZipObject>) => {
+        fileNames.push(...zipEntries.map(zipEntry => zipEntry.name));
         return fileNames;
       }, []));
   }
@@ -66,15 +66,15 @@ export class FaceszipService implements QuizServiceInterface {
       }));
   }
 
-  private isEntryName(entry: ZipEntryInterface, filename: string) {
-    return entry.filename === filename;
+  private isEntryName(entry: JSZipObject, filename: string) {
+    return entry.name === filename;
   }
 
-  private getImageFromZip(zipEntry: ZipEntryInterface): Observable<string> {
-    this.getFileType(zipEntry.filename);
+  private getImageFromZip(zipEntry: JSZipObject): Observable<string> {
+    this.getFileType(zipEntry.name);
     const task = this.zipService.getData(zipEntry);
-    return task.data.pipe(switchMap(data => {
-      const blob = new Blob([data], { type: this.getFileType(zipEntry.filename) });
+    return task.data.pipe(switchMap((data: BlobPart) => {
+      const blob = new Blob([data], { type: this.getFileType(zipEntry.name) });
       return this.getImageSrc(blob);
     }));
   }
