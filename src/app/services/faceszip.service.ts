@@ -74,10 +74,8 @@ export class FaceszipService implements QuizServiceInterface {
     this.getFileType(zipEntry.name);
     const task = this.zipService.getData(zipEntry);
     return task.data.pipe(switchMap((data: BlobPart) => {
-      if (data) {
-        const blob = new Blob([data], { type: this.getFileType(zipEntry.name) });
-        return this.getImageSrc(blob);
-      }
+      const blob = new Blob([data], { type: this.getFileType(zipEntry.name) });
+      return this.getImageSrc(blob);
     }));
   }
 

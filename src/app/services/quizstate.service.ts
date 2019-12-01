@@ -42,6 +42,7 @@ export class QuizstateService {
       this.items = await this.newQuizItems().toPromise();
     }
     this.currentItem = this.items.pop();
+    // this.service.getZipEntries();
   }
 
   public imageLocation$(): Observable<string> {

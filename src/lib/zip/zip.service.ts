@@ -20,6 +20,20 @@ export class ZipService {
 
   }
 
+  getEntries(file): Observable<Array<ZipEntryInterface>> {
+    return new Observable(subscriber => {
+      const reader = new zip.BlobReader(file);
+      zip.createReader(reader, zipReader => {
+        zipReader.getEntries(entries => {
+          subscriber.next(entries);
+          subscriber.complete();
+        });
+      }, message => {
+        subscriber.error({ message });
+      });
+    });
+  }
+
   getEntries(fileName): Observable<Array<JSZipObject>> {
     return fromPromise(this.ziptest.loadAsync(fileName)).pipe(map((jsZip: JSZip) => {
       const files: Array<JSZipObject> = [];
