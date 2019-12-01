@@ -1,5 +1,11 @@
 # FaceQuiz
 
+Web page for learning names of faces. Input is a zip file containing the pictures of the faces, the filenames should contain the corresponding name. Spaces in names should be represented by an underscore.
+Ie:
+Zip file: my-new-colleagues.zip contains:
+- John_Doe.jpg
+- Foo_Bar.jpg
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.0.2.
 
 ## Development server
