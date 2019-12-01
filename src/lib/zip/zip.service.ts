@@ -21,17 +21,6 @@ export class ZipService {
   }
 
   getEntries(fileName): Observable<Array<JSZipObject>> {
-    // return new Observable(subscriber => {
-    //   const reader = new zip.BlobReader(file);
-    //   zip.createReader(reader, zipReader => {
-    //     zipReader.getEntries(entries => {
-    //       subscriber.next(entries);
-    //       subscriber.complete();
-    //     });
-    //   }, message => {
-    //     subscriber.error({ message });
-    //   });
-    // });
     return fromPromise(this.ziptest.loadAsync(fileName)).pipe(map((jsZip: JSZip) => {
       const files: Array<JSZipObject> = [];
 
@@ -41,45 +30,18 @@ export class ZipService {
       }
       return files;
     }));
-    // const files: Array<JSZipObject> = [];
-    //
-    // // tslint:disable-next-line:forin
-    // for (fileName in zipFile.files) {
-    //   files.push(zipFile.files[fileName]);
-    // }
-    // console.log('>>>filesNames: ', files);
-    // return new Promise(() => files);
   }
 
-  getData(entry: JSZipObject): {progress, data} {
-    const progress$ = new Subject();
+  getData(entry: JSZipObject): {progress: Subject<number>, data: Subject<BlobPart>} {
+    const progress$ = new Subject<number>();
     const data$ = new Subject<BlobPart>();
     entry.async('blob', function updateCallback(metadata) {
       console.log('progression: ' + metadata.percent.toFixed(2) + ' %');
-      if (metadata.percent < 100) {
-        progress$.next((metadata.percent));
-      } else {
-        progress$.next(null);
-        data$.next(null);
-      }
+      progress$.next((metadata.percent));
     }).then(function (blob) {
+      console.log('data received');
       data$.next(blob);
     });
     return {progress: progress$, data: data$};
-    // const progress = new Subject<ZipTaskProgressInterface>();
-    // const data = new Observable<Blob>(subscriber => {
-    //   const writer = new zip.BlobWriter();
-    //
-    //   // Using `as any` because we don't want to expose this
-    //   // method in the interface
-    //   (entry as any).getData(writer, blob => {
-    //     subscriber.next(blob);
-    //     subscriber.complete();
-    //     progress.next(null);
-    //   }, (current, total) => {
-    //     progress.next({ active: true, current, total });
-    //   });
-    // });
-    // return { progress, data };
   }
 }
