@@ -1,15 +1,17 @@
 // This is added globally by the zip.js library
 import { Injectable } from '@angular/core';
-import { from, Observable, of, Subject } from 'rxjs';
-import { ZipEntryInterface } from './zip-entry.interface';
-import { ZipTaskInterface } from './zip-task.interface';
-import { ZipTaskProgressInterface } from './zip-task-progress.interface';
+import { Observable, Subject } from 'rxjs';
 
 import JSZip, { JSZipObject } from 'jszip';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import { map } from 'rxjs/operators';
 
 declare const zip: any;
+
+export interface ZipDataProgress {
+  progress: Subject<number>;
+  data: Subject<BlobPart>;
+}
 
 @Injectable()
 export class ZipService {
@@ -46,7 +48,7 @@ export class ZipService {
     }));
   }
 
-  getData(entry: JSZipObject): {progress: Subject<number>, data: Subject<BlobPart>} {
+  getData(entry: JSZipObject): ZipDataProgress {
     const progress$ = new Subject<number>();
     const data$ = new Subject<BlobPart>();
     entry.async('blob', function updateCallback(metadata) {
@@ -56,6 +58,6 @@ export class ZipService {
       console.log('data received');
       data$.next(blob);
     });
-    return {progress: progress$, data: data$};
+    return { progress: progress$, data: data$ };
   }
 }

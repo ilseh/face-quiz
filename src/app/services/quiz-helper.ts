@@ -15,10 +15,10 @@ export class QuizHelper {
 
   /**
    * Removes random item from items.
-   * @param items to remove random item from - note that items is updated
+   * @param items to remove random item from - note that items is mutated
    * @return random item
    */
-  public static popRandom(items: string[]): string {
+  public static popRandom<T>(items: T[]): T {
     const randomIndex = QuizHelper.getRandomIndex(items.length);
     return items.splice(randomIndex, 1)[0];
   }

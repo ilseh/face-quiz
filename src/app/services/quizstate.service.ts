@@ -3,11 +3,13 @@ import { FaceszipService } from './faceszip.service';
 import { QuizHelper } from './quiz-helper';
 import { Observable, of } from 'rxjs';
 import { map, take } from 'rxjs/operators';
+import { JSZipObject } from 'jszip';
 
 export class QuizItem {
   public numberOfGuesses = 0;
+  public imageLocation$: Observable<string>;
 
-  constructor(public name: string, public alternatives: string[], public imageLocation$: Observable<string>) {
+  constructor(public name: string, public alternatives: string[], public _jsZipObjet: JSZipObject) {
   }
 
 }
@@ -23,15 +25,16 @@ export class QuizstateService {
   }
 
   public newQuizItems(): Observable<QuizItem[]> {
-    return this.service.getNames().pipe(take(1), map((allNames: string[]) => {
-      const names = [...allNames];
-      const items: QuizItem[] = [];
+    return this.service.getZipEntries().pipe(take(1), map((zipObjects: Array<JSZipObject>) => {
 
-      while (items.length < allNames.length) {
+      const items: QuizItem[] = [];
+      const zipObjectsCopy = [...zipObjects];
+      const allNames: string[] = zipObjects.map(zipObject => zipObject.name);
+
+      while (items.length < zipObjects.length) {
         // Create quiz items in random order
-        const itemName = QuizHelper.popRandom(names);
-        items.push(new QuizItem(itemName, QuizHelper.getNamesToChooseFrom(itemName, allNames),
-          this.service.getImageLocation(itemName)));
+        const zipObject = QuizHelper.popRandom(zipObjectsCopy);
+        items.push(new QuizItem(zipObject.name, QuizHelper.getNamesToChooseFrom(zipObject.name, allNames), zipObject));
       }
       return items;
     }));
@@ -45,7 +48,7 @@ export class QuizstateService {
   }
 
   public imageLocation$(): Observable<string> {
-    return this.currentItem.imageLocation$;
+    return this.service.getImageFromZip(this.currentItem._jsZipObjet);
   }
 
 }

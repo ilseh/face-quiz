@@ -29,12 +29,12 @@ describe('FacezipService', () => {
     zipServiceMock = spectator.get(ZipService);
   });
 
-  describe('getNames', () => {
-    it('should get names', () => {
-      zipServiceMock.getEntries.and.returnValue(of(zipObjects));
-      const names$ = service.getNames();
-      names$.subscribe(names => expect(names)
-        .toEqual(['file1.txt', 'file2.txt']));
-    });
-  });
+  // describe('getNames', () => {
+  //   it('should get names', () => {
+  //     zipServiceMock.getEntries.and.returnValue(of(zipObjects));
+  //     const names$ = service.getNames();
+  //     names$.subscribe(names => expect(names)
+  //       .toEqual(['file1.txt', 'file2.txt']));
+  //   });
+  // });
 });
