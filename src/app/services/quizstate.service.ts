@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FaceszipService } from './faceszip.service';
+import { FaceszipService, ZipDataProgress } from './faceszip.service';
 import { QuizHelper } from './quiz-helper';
 import { Observable, of } from 'rxjs';
 import { map, take } from 'rxjs/operators';
@@ -7,9 +7,8 @@ import { JSZipObject } from 'jszip';
 
 export class QuizItem {
   public numberOfGuesses = 0;
-  public imageLocation$: Observable<string>;
 
-  constructor(public name: string, public alternatives: string[], public _jsZipObjet: JSZipObject) {
+  constructor(public name: string, public alternatives: string[], public imageFn$: () => ZipDataProgress) {
   }
 
 }
@@ -34,7 +33,8 @@ export class QuizstateService {
       while (items.length < zipObjects.length) {
         // Create quiz items in random order
         const zipObject = QuizHelper.popRandom(zipObjectsCopy);
-        items.push(new QuizItem(zipObject.name, QuizHelper.getNamesToChooseFrom(zipObject.name, allNames), zipObject));
+        items.push(new QuizItem(zipObject.name, QuizHelper.getNamesToChooseFrom(zipObject.name, allNames),
+          this.service.getFileDataFn(zipObject)));
       }
       return items;
     }));
@@ -48,7 +48,7 @@ export class QuizstateService {
   }
 
   public imageLocation$(): Observable<string> {
-    return this.service.getImageFromZip(this.currentItem._jsZipObjet);
+    return this.service.getImageFromZipData(this.currentItem.imageFn$(), this.currentItem.name);
   }
 
 }
