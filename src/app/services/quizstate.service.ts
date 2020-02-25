@@ -40,7 +40,7 @@ export class QuizstateService {
     }));
   }
 
-  async setCurrentItem() {
+  async setCurrentItem(): Promise<void> {
     if (!this.items || this.items.length === 0) {
       this.items = await this.newQuizItems().toPromise();
     }

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { QuizstateService } from '../services/quizstate.service';
 import { QuizHelper } from '../services/quiz-helper';
-import { Observable, of, Subject, timer } from 'rxjs';
+import { Observable, Subject, timer } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 const RESULT_OK = 'OK';
@@ -17,7 +17,6 @@ const TIME_TO_PROCEED = 3;
 export class FaceCardComponent implements OnInit {
   public form = new FormGroup({ name: new FormControl() });
   public result: string;
-  isReady$: Observable<boolean>;
   private timeLeft = 0;
   private stopTimer = new Subject();
   private currentImageLocation$: Observable<string>;
@@ -27,8 +26,11 @@ export class FaceCardComponent implements OnInit {
 
   async ngOnInit() {
     await this.quizState.setCurrentItem();
-    this.currentImageLocation$ = this.quizState.imageLocation$();;
-    this.isReady$ = of(true);
+    this.currentImageLocation$ = this.quizState.imageLocation$();
+  }
+
+  public isInitialized(): boolean {
+    return !!this.quizState.currentItem;
   }
 
   get imageSource$(): Observable<string> {
@@ -60,7 +62,7 @@ export class FaceCardComponent implements OnInit {
     this.stopAndReableTimer();
     this.clearValuesForNextItem();
     this.quizState.setCurrentItem();
-    this.currentImageLocation$ = this.quizState.imageLocation$();;
+    this.currentImageLocation$ = this.quizState.imageLocation$();
   }
 
   stopAndReableTimer() {

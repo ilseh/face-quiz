@@ -61,7 +61,7 @@ export class FaceszipService {
       const data$ = new Subject<BlobPart>();
       entry.async('blob', (metadata) => {
         console.log('progression: ' + metadata.percent.toFixed(2) + ' %');
-        progress$.next((metadata.percent));
+        progress$.next(metadata.percent);
       }).then((blob) => {
         console.log('data received');
         data$.next(blob);
