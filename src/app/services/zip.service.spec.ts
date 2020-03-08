@@ -1,5 +1,5 @@
-import { createServiceFactory, SpectatorService, SpyObject } from '@ngneat/spectator';
-import { ZipService } from './zip.service';
+import { createServiceFactory, mockProvider, SpectatorService, SpyObject } from '@ngneat/spectator';
+import { ZIP_SERVICE, ZipService } from './zip.service';
 import JSZip from 'jszip';
 
 describe('ZipService', () => {
@@ -18,13 +18,13 @@ describe('ZipService', () => {
 
   const createService = createServiceFactory({
     service: ZipService,
-    mocks: [JSZip]
+    providers: [{provide: ZIP_SERVICE, useValue: mockProvider(JSZip)}]
   });
 
   beforeEach(() => {
     spectator = createService();
     service = spectator.service;
-    zipServiceMock = spectator.get(JSZip);
+    zipServiceMock = spectator.get(ZIP_SERVICE);
   });
 
   it('should be initialize', () => {

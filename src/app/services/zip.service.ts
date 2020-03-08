@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, InjectionToken } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import JSZip, { JSZipObject } from 'jszip';
@@ -7,6 +7,8 @@ import { fromPromise } from 'rxjs/internal-compatibility';
 const IMG_EXTENSIONS = ['png', 'jpeg', 'jpg', 'gif'];
 const TYPE_PLAIN_TEXT = 'plain/text';
 const TYPE_OF_IMAGE = 'image/';
+
+export const ZIP_SERVICE = new InjectionToken<JSZip>('ZIP_SERVICE');
 
 export interface ZipDataProgress {
   progress: Subject<number>;
@@ -21,8 +23,9 @@ export interface ZipDataProgress {
  */
 export class ZipService {
   private zipFile: Blob;
+  // private jsZip = new JSZip();
 
-  constructor(private jsZip: JSZip) {
+  constructor(@Inject(ZIP_SERVICE) private jsZip: JSZip) {
   }
 
   public setZipFile(file: Blob) {
