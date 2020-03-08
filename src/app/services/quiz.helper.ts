@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 export const QUIZ_NUMBER_OF_ALTERNATIVES = 2;
 export class QuizHelper {
 
-  public static shake(items: string[]): string[] {
+  public static shake<T>(items: T[]): T[] {
     const copyOfItems = _.cloneDeep(items);
     const shaken = [];
 
@@ -45,7 +45,7 @@ export class QuizHelper {
     const allNamesButCurrentFace = _.cloneDeep(allNames).filter(name => name !== nameOfCurrentFace);
     const alternatives: string[] = [];
     // From all possible names, pick random name and remove that name from the possible names so
-    // we can do not get duplicates.
+    // we do not get duplicates.
     while (alternatives.length < QUIZ_NUMBER_OF_ALTERNATIVES) {
       alternatives.push(QuizHelper.popRandom(allNamesButCurrentFace));
     }

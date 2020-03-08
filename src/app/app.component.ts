@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FaceszipService } from './services/faceszip.service';
+import { ZipService } from './services/zip.service';
 
 @Component({
   selector: 'app-root',
@@ -9,14 +9,15 @@ import { FaceszipService } from './services/faceszip.service';
 export class AppComponent {
   title = 'face-quiz';
 
-  zipFile: Blob;
+  constructor(private facesZipService: ZipService) {
+  }
 
-  constructor(private facesZipService: FaceszipService) {
+  get zipFile(): Blob {
+    return this.facesZipService.getZipFile();
   }
 
   fileChanged(event) {
     const zipFile = event.target.files[0];
-    this.zipFile = zipFile;
     this.facesZipService.setZipFile(zipFile);
   }
 }

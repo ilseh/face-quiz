@@ -16,12 +16,21 @@ export interface ZipDataProgress {
 @Injectable({
   providedIn: 'root'
 })
-export class FaceszipService {
-  private jsZip = new JSZip();
+/**
+ * Service for handling zipfile. Fetches the entries and can extract file from zip.
+ */
+export class ZipService {
   private zipFile: Blob;
+
+  constructor(private jsZip: JSZip) {
+  }
 
   public setZipFile(file: Blob) {
     this.zipFile = file;
+  }
+
+  public getZipFile(): Blob {
+    return this.zipFile;
   }
 
   public getZipEntries(): Observable<Array<JSZipObject>> {
@@ -55,8 +64,12 @@ export class FaceszipService {
     return type;
   }
 
+  /**
+   * Returns a function to be used to extract file content from zip on basis of entry in zip.
+   * @param entry in the zip file
+   */
   getFileDataFn(entry: JSZipObject): () => ZipDataProgress {
-    return () => {
+    return (): ZipDataProgress => {
       const progress$ = new Subject<number>();
       const data$ = new Subject<BlobPart>();
       entry.async('blob', (metadata) => {
@@ -70,7 +83,7 @@ export class FaceszipService {
     };
   }
 
-  public getImageFromZipData(task: ZipDataProgress, filename: string): Observable<string> {
+  public getImageLocationFromZipData(task: ZipDataProgress, filename: string): Observable<string> {
     return task.data.pipe(switchMap((data: BlobPart) => {
       if (data) {
         const blob = new Blob([data], { type: this.getFileType(filename) });

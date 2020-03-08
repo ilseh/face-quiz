@@ -14,6 +14,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FaceQuizComponent } from './face-quiz/face-quiz.component';
 import { MatProgressSpinnerModule } from '@angular/material';
+import JSZip from 'jszip';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,7 @@ import { MatProgressSpinnerModule } from '@angular/material';
     BrowserModule, BrowserAnimationsModule, MatCardModule, MatRadioModule, HttpClientModule, ReactiveFormsModule,
     MatDialogModule, MatButtonModule, MatInputModule, MatFormFieldModule, MatProgressSpinnerModule
   ],
-  providers: [],
+  providers: [JSZip],
   bootstrap: [AppComponent]
 })
 export class AppModule {

@@ -1,24 +1,24 @@
 import { QuizstateService } from './quizstate.service';
 import { createServiceFactory, SpectatorService, SpyObject } from '@ngneat/spectator';
-import { FaceszipService } from './faceszip.service';
+import { ZipService } from './zip.service';
 import { of } from 'rxjs';
-import { QUIZ_NUMBER_OF_ALTERNATIVES } from './quiz-helper';
+import { QUIZ_NUMBER_OF_ALTERNATIVES } from './quiz.helper';
 
 describe('QuizstateService', () => {
   let spectator: SpectatorService<QuizstateService>;
   let service: QuizstateService;
-  let facezipServiceMock: SpyObject<FaceszipService>;
+  let facezipServiceMock: SpyObject<ZipService>;
   const NAMES = ['image1.png', 'image2.png', 'image3.png', 'image4.png'];
 
   const createService = createServiceFactory({
     service: QuizstateService,
-    mocks: [FaceszipService]
+    mocks: [ZipService]
   });
 
   beforeEach(() => {
     spectator = createService();
     service = spectator.service;
-    facezipServiceMock = spectator.get(FaceszipService);
+    facezipServiceMock = spectator.get(ZipService);
   });
 
   it('should be created', () => {
