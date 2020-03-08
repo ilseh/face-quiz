@@ -13,7 +13,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FaceQuizComponent } from './face-quiz/face-quiz.component';
-import { MatProgressSpinnerModule } from '@angular/material';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import JSZip from 'jszip';
 import { ZIP_SERVICE } from './services/zip.service';
 
