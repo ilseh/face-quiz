@@ -8,13 +8,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInput, MatInputModule } from '@angular/material/input';
+import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FaceQuizComponent } from './face-quiz/face-quiz.component';
-import { LibModule } from '../lib/lib.module';
-import { MatProgressSpinnerModule, MatSpinner } from '@angular/material';
+import { MatProgressSpinnerModule } from '@angular/material';
+import JSZip from 'jszip';
+import { ZIP_SERVICE } from './services/zip.service';
+
 
 @NgModule({
   declarations: [
@@ -24,9 +26,9 @@ import { MatProgressSpinnerModule, MatSpinner } from '@angular/material';
   ],
   imports: [
     BrowserModule, BrowserAnimationsModule, MatCardModule, MatRadioModule, HttpClientModule, ReactiveFormsModule,
-    MatDialogModule, MatButtonModule, MatInputModule, MatFormFieldModule, MatProgressSpinnerModule, LibModule
+    MatDialogModule, MatButtonModule, MatInputModule, MatFormFieldModule, MatProgressSpinnerModule
   ],
-  providers: [],
+  providers: [{provide: ZIP_SERVICE, useValue: new JSZip()}],
   bootstrap: [AppComponent]
 })
 export class AppModule {

@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { QuizstateService } from '../services/quizstate.service';
-import { QuizHelper } from '../services/quiz-helper';
-import { Observable, of, Subject, timer } from 'rxjs';
-import { take, takeUntil } from 'rxjs/operators';
+import { QuizHelper } from '../services/quiz.helper';
+import { Observable, Subject, timer } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 const RESULT_OK = 'OK';
 const RESULT_NOK = 'NOK';
@@ -17,20 +17,24 @@ const TIME_TO_PROCEED = 3;
 export class FaceCardComponent implements OnInit {
   public form = new FormGroup({ name: new FormControl() });
   public result: string;
-  isReady$: Observable<boolean>;
   private timeLeft = 0;
   private stopTimer = new Subject();
+  private currentImageLocation$: Observable<string>;
 
   constructor(private quizState: QuizstateService) {
   }
 
   async ngOnInit() {
     await this.quizState.setCurrentItem();
-    this.isReady$ = of(true);
+    this.currentImageLocation$ = this.quizState.imageLocation$();
+  }
+
+  public isInitialized(): boolean {
+    return !!this.quizState.currentItem;
   }
 
   get imageSource$(): Observable<string> {
-    return this.quizState.imageLocation$();
+    return this.currentImageLocation$;
   }
 
   get names(): string[] {
@@ -41,10 +45,10 @@ export class FaceCardComponent implements OnInit {
     return QuizHelper.makePrettyName(name);
   }
 
-  processItem() {
+  async processItem() {
     if (this.isGuessed()) {
       // Face was guessed in previous cycle, button is pressed to go to next face.
-      this.goNext();
+      await this.goNext();
     } else {
       this.quizState.currentItem.numberOfGuesses++;
       this.determineGuessedStatus();
@@ -54,10 +58,11 @@ export class FaceCardComponent implements OnInit {
     }
   }
 
-  private goNext() {
+  private async goNext() {
     this.stopAndReableTimer();
     this.clearValuesForNextItem();
-    this.quizState.setCurrentItem();
+    await this.quizState.setCurrentItem();
+    this.currentImageLocation$ = this.quizState.imageLocation$();
   }
 
   stopAndReableTimer() {
@@ -97,10 +102,10 @@ export class FaceCardComponent implements OnInit {
   }
 
   setTimer() {
-    timer(0, 1000).pipe(takeUntil(this.stopTimer)).subscribe(value => {
+    timer(0, 1000).pipe(takeUntil(this.stopTimer)).subscribe(async value => {
         this.timeLeft = TIME_TO_PROCEED - value;
         if (this.timeLeft < 1) {
-          this.goNext();
+          await this.goNext();
         }
     });
   }

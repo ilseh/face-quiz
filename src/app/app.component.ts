@@ -1,12 +1,5 @@
 import { Component } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import * as JSZip from 'jszip';
-import * as fs from 'file-system';
-import { ZipService } from '../lib/zip/zip.service';
-import { ZipEntryInterface } from '../lib/zip/zip-entry.interface';
-// import { saveAs } from 'file-saver/FileSaver';
-import { saveAs } from 'file-saver';
-import { FaceszipService } from './services/faceszip.service';
+import { ZipService } from './services/zip.service';
 
 @Component({
   selector: 'app-root',
@@ -15,22 +8,16 @@ import { FaceszipService } from './services/faceszip.service';
 })
 export class AppComponent {
   title = 'face-quiz';
-  testImage = '';
 
-  zipFile: Blob;
-
-  inputZipControl = new FormControl('');
-  inputZip: string;
-
-  constructor(private facesZipService: FaceszipService, private test: FaceszipService) {
-
+  constructor(private facesZipService: ZipService) {
   }
 
+  get zipFile(): Blob {
+    return this.facesZipService.getZipFile();
+  }
 
   fileChanged(event) {
-    const test = event.target.files[0];
-    this.zipFile = test;
-    this.facesZipService.setZipFile(test);
-
+    const zipFile = event.target.files[0];
+    this.facesZipService.setZipFile(zipFile);
   }
 }

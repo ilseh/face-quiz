@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
-import { FaceszipService } from './faceszip.service';
-import { QuizHelper } from './quiz-helper';
+import { ZipService, ZipDataProgress } from './zip.service';
+import { QuizHelper } from './quiz.helper';
 import { Observable, of } from 'rxjs';
 import { map, take } from 'rxjs/operators';
+import { JSZipObject } from 'jszip';
 
 export class QuizItem {
   public numberOfGuesses = 0;
 
-  constructor(public name: string, public alternatives: string[], public imageLocation$: Observable<string>) {
+  constructor(public name: string, public alternatives: string[], public imageFn$: () => ZipDataProgress) {
   }
 
 }
@@ -15,29 +16,33 @@ export class QuizItem {
 @Injectable({
   providedIn: 'root'
 })
+/**
+ * State of the Quiz. Initializes set of quizitems and set a current quizitem for the app.
+ */
 export class QuizstateService {
   private items: QuizItem[];
   public currentItem: QuizItem;
 
-  constructor(private service: FaceszipService) {
+  constructor(private service: ZipService) {
   }
 
   public newQuizItems(): Observable<QuizItem[]> {
-    return this.service.getNames().pipe(take(1), map((allNames: string[]) => {
-      const names = [...allNames];
-      const items: QuizItem[] = [];
+    // Get all entries from zip file. Should be pictures where filename contains name of the person.
+    return this.service.getZipEntries().pipe(take(1), map((zipObjects: Array<JSZipObject>) => {
 
-      while (items.length < allNames.length) {
-        // Create quiz items in random order
-        const itemName = QuizHelper.popRandom(names);
-        items.push(new QuizItem(itemName, QuizHelper.getNamesToChooseFrom(itemName, allNames),
-          this.service.getImageLocation(itemName)));
-      }
+      const zipObjectsCopy = [...zipObjects];
+      const allNames: string[] = zipObjects.map(zipObject => zipObject.name);
+
+      // Shuffle the zipObjects and convert them to QuizItems.
+      const items: QuizItem[] = QuizHelper.shake(zipObjectsCopy).map(zipObject =>
+        new QuizItem(zipObject.name, QuizHelper.getNamesToChooseFrom(zipObject.name, allNames),
+          this.service.getFileDataFn(zipObject)));
+
       return items;
     }));
   }
 
-  async setCurrentItem() {
+  async setCurrentItem(): Promise<void> {
     if (!this.items || this.items.length === 0) {
       this.items = await this.newQuizItems().toPromise();
     }
@@ -45,7 +50,7 @@ export class QuizstateService {
   }
 
   public imageLocation$(): Observable<string> {
-    return this.currentItem.imageLocation$;
+    return this.service.getImageLocationFromZipData(this.currentItem.imageFn$(), this.currentItem.name);
   }
 
 }

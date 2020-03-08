@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
-import { QUIZ_NUMBER_OF_ALTERNATIVES, QuizHelper } from './quiz-helper';
+import { QUIZ_NUMBER_OF_ALTERNATIVES, QuizHelper } from './quiz.helper';
 
-xdescribe('QuizService', () => {
+describe('QuizService', () => {
   const CORRECT_NAME = 'test';
   const ALL_NAMES = ['test1', 'test2', 'test3', 'test4', 'test5', 'test6'];
 
