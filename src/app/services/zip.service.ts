@@ -23,7 +23,6 @@ export interface ZipDataProgress {
  */
 export class ZipService {
   private zipFile: Blob;
-  // private jsZip = new JSZip();
 
   constructor(@Inject(ZIP_SERVICE) private jsZip: JSZip) {
   }
